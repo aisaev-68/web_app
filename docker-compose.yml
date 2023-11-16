@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    restart: always
+    container_name: web
+    volumes:
+      - ./app:/code/app
+    #      - ./tests:/code/tests
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    networks:
+      - net
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
+    volumes:
+      - ./mongodb_data:/data/db
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  #driver: local
+
